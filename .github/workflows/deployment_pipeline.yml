@@ -32,4 +32,4 @@ jobs:
     needs: [test_e2e]
     steps:
       - name: Trigger deployment
-        run: curl ${{ secrets.RENDER_DEPLOY_URL }}
+        run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
