@@ -1,15 +1,15 @@
 name: Health Check
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "* * * * *"  # Every minute
 
 jobs:
   health_check_job:
     runs-on: ubuntu-latest
     steps:
       - name: Check the deployed service URL
+        id: health_check
         uses: jtalk/url-health-check-action@v4
         with:
           url: ${{ secrets.SERVICE_URL }}/health
@@ -17,21 +17,39 @@ jobs:
           max-attempts: 3
           retry-delay: 100s
           retry-all: false
+      
       - name: Notify Discord - Health Check Success
+        if: success()
         uses: rjstone/discord-webhook-notify@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: Pokedex Health Check Bot
           avatarUrl: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png
-          text: 🚀 **Health Check Successful!**
+          text: |
+            🚀 **Health Check Successful!**
+            
+            **Service:** ${{ secrets.SERVICE_URL }}
+            **Status:** ✅ Healthy
+            **Time:** ${{ github.event.head_commit.timestamp }}
+            
+            Your Pokedex app is running smoothly!
           severity: info
           color: '#00ff00'
+      
       - name: Notify Discord - Health Check Failure
+        if: failure()
         uses: rjstone/discord-webhook-notify@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: Pokedex Health Check Bot
           avatarUrl: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png
-          text: ❌ **Health Check Failed!**
+          text: |
+            ❌ **Health Check Failed!**
+            
+            **Service:** ${{ secrets.SERVICE_URL }}
+            **Status:** 🔴 Unhealthy
+            **Time:** ${{ github.event.head_commit.timestamp }}
+            
+            Please check your deployment on Render!
           severity: error
           color: '#ff0000'
