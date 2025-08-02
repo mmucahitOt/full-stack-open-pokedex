@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies and build
         run: npm run install-and-build
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action
+        uses: anothrNick/github-tag-action@v1.73.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
   deploy:
