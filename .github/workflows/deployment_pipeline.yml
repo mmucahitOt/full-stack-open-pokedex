@@ -1,5 +1,8 @@
 name: Deployment pipeline Render
 
+env:
+  VERSION_BUMP_CONDITION: ${{ contains(toJson(github.event.commits.*.message), '#skip') }}
+  DEPLOYMENT_CONDITION: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
 on:
   push:
     branches:
@@ -46,7 +49,7 @@ jobs:
   version_bump:
     runs-on: ubuntu-latest
     needs: [build_and_lint, test_e2e]
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
+    if: ${{ env.DEPLOYMENT_CONDITION == 'true' && env.VERSION_BUMP_CONDITION == 'true' }}
     permissions:
       contents: write
     steps:
@@ -61,7 +64,7 @@ jobs:
           DEFAULT_BUMP: minor
 
   deploy:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
+    if: ${{ env.DEPLOYMENT_CONDITION == 'true' }}
     runs-on: ubuntu-latest
     needs: [build_and_lint, test_e2e, version_bump]
     steps:
