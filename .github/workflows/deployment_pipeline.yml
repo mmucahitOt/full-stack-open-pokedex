@@ -16,10 +16,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Check style
-        run: npm run eslint
       - name: Install dependencies and build
         run: npm run install-and-build
+      - name: Check style
+        run: npm run eslint
 
   test_e2e:
     timeout-minutes: 60
