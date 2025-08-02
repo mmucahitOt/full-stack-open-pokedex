@@ -30,7 +30,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-  # this is a custom step to build the project and push a tag. On Render, the build step is not triggered automatically with the same command.
+  # this is a custom step to build the project and push a tag. On Render, the build step is triggered automatically with the same command.
   build:
     runs-on: ubuntu-latest
     needs: [test_e2e]
@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies and build
         run: npm run install-and-build
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@v1.73.0
+        uses: anothrNick/github-tag-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
   deploy:
