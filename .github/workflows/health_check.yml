@@ -1,0 +1,37 @@
+name: Health Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  health_check_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: ${{ secrets.SERVICE_URL }}/health
+          follow-redirect: false
+          max-attempts: 3
+          retry-delay: 100s
+          retry-all: false
+      - name: Notify Discord - Health Check Success
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Pokedex Health Check Bot
+          avatarUrl: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png
+          text: 🚀 **Health Check Successful!**
+          severity: info
+          color: '#00ff00'
+      - name: Notify Discord - Health Check Failure
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Pokedex Health Check Bot
+          avatarUrl: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png
+          text: ❌ **Health Check Failed!**
+          severity: error
+          color: '#ff0000'
