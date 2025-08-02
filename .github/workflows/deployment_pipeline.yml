@@ -44,9 +44,9 @@ jobs:
           retention-days: 30
           
   version_bump:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-latest
     needs: [build_and_lint, test_e2e]
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
     steps:
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@v1
@@ -56,7 +56,7 @@ jobs:
   deploy:
     if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-latest
-    needs: [build_and_lint, test_e2e]
+    needs: [build_and_lint, test_e2e, version_bump]
     steps:
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
