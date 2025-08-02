@@ -44,6 +44,7 @@ jobs:
           retention-days: 30
           
   version_bump:
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-latest
     needs: [build_and_lint, test_e2e]
     steps:
