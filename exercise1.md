@@ -1,0 +1,7 @@
+# Exercise 11.1
+
+We are a team of six developers working on a TypeScript application. To work efficiently, we need a good CI/CD pipeline. The idea is that every change should be tested, reviewed, and deployed in a safe and fast way. A simple branch strategy is to keep the `main` branch stable for production and create short feature branches for new work. When a developer opens a pull request, the CI pipeline runs automatically. It checks the code with **ESLint** for linting, **Prettier** for formatting, and runs unit tests with **Jest**. This helps us find problems early before the code is merged.
+
+After merging, the system can deploy the code to a staging environment. In staging, we can run integration tests or end-to-end tests with tools like **Cypress** or **Playwright**. If everything works correctly, the pipeline can promote the build to production. Packaging the app into a Docker image ensures the code runs the same way in all environments.
+
+Besides GitHub Actions and Jenkins, there are other options for CI/CD. **GitLab CI/CD**, **CircleCI**, and **Travis CI** are common cloud-based choices. For a small team, cloud solutions are often better, since they are easy to use and need less maintenance. A self-hosted solution could be better if the project has strict security rules or needs to stay inside the company’s network. To decide, we must consider cost, security, and how often we plan to release.
